@@ -1,0 +1,40 @@
+{
+  "name": "tui",
+  "version": "0.0.0",
+  "description": "UI components for mobile H5 page",
+  "main": "index.js",
+  "module": "./lib/es-module.mjs",
+  "scripts": {
+    "commit": "sh ./script/shell/commit.sh",
+    "commit-amend": "sh ./script/shell/commit-amend.sh",
+    "playground": "pnpm -F ./packages/playground run start",
+    "create": "node ./script/js/create-package.mjs"
+  },
+  "author": "changhu.cheng@shopee.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "vue": "2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.3",
+    "@babel/preset-env": "^7.24.3",
+    "@types/node": "^20.11.30",
+    "babel-loader": "^9.1.3",
+    "clean-webpack-plugin": "^4.0.0",
+    "css-loader": "^6.10.0",
+    "html-webpack-plugin": "^5.6.0",
+    "mini-css-extract-plugin": "^2.8.1",
+    "postcss-loader": "^8.1.1",
+    "sass": "^1.72.0",
+    "sass-loader": "^14.1.1",
+    "style-loader": "^3.3.4",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.3",
+    "vue-loader": "^15.11.1",
+    "vue-style-loader": "^4.1.3",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.0.4",
+    "webpack-merge": "^5.10.0"
+  }
+}
