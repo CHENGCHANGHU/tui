@@ -5,7 +5,7 @@
   "main": "./lib/cjs-module.cjs",
   "module": "./lib/es-module.mjs",
   "types": "./dist/index.d.ts",
-  "author": "Changhu Cheng <changhu.cheng@shopee.com>",
+  "author": "Changhu Cheng <1669675499@qq.com>",
   "homepage": "",
   "license": "Apache-2.0",
   "repository": {

@@ -8,7 +8,9 @@
     "commit": "sh ./script/shell/commit.sh",
     "commit-amend": "sh ./script/shell/commit-amend.sh",
     "playground": "pnpm -F ./packages/playground run start",
-    "create": "node ./script/js/create-package.mjs"
+    "create": "node ./script/js/create-package.mjs",
+    "dev": "webpack --watch --color --progress --node-env=production --mode production -c ./webpack-config/webpack.config.mjs",
+    "build": "webpack --color --progress --node-env=production --mode production -c ./webpack-config/webpack.config.mjs"
   },
   "author": "changhu.cheng@shopee.com",
   "license": "Apache-2.0",
