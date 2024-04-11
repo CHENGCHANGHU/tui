@@ -6,21 +6,6 @@ import readline from 'node:readline';
 import { camelString, gracefullyExit } from './utils.mjs';
 import { createLog } from './print.mjs';
 
-readline.Interface.prototype._insertString = function(c) {
-  if (this.cursor < this.line.length) {
-    var beg = this.line.slice(0, this.cursor);
-    var end = this.line.slice(this.cursor, this.line.length);
-    this.line = beg + c + end;
-    this.cursor += c.length;
-    this._refreshLine();
-  } else {
-    this.line += c;
-    this.cursor += c.length;
-    this.output.write(c);
-    this._moveCursor(0);
-  }
-};
-
 process.on('unhandledRejection', error => {
   console.error(error);
   gracefullyExit();
@@ -50,7 +35,12 @@ const {
   },
 });
 
-main();
+try {
+  main();
+} catch (e) {
+  console.error(e);
+  process.exit(0);
+}
 
 async function main() {
   const { log, success, error, close } = createLog();
@@ -61,8 +51,6 @@ async function main() {
 
     const camelPackageName = camelString(packageName);
     if (/^[^a-zA-Z]/.test(packageName)) {
-      // readline.moveCursor(process.stdout, 0, -1);
-      // readline.clearLine(process.stdout, -1);
       error(packageName + ' failed! Package name cannot be started with a non-word character.', { displace: true });
       continue;
     }
@@ -93,11 +81,14 @@ async function main() {
           continue;
         }
         const filePath = join(parentPath, dirent.name);
-        const content = await readFile(filePath, { encoding: 'utf-8', flag: 'r' });
-        const replacedContent = content
+        // const content = await readFile(filePath, { encoding: 'utf-8', flag: 'r' });
+        // const replacedContent = content
+        //   .replaceAll(/<!-- package-name -->/g, packageName)
+        //   .replaceAll(/<!-- camel-package-name -->/g, camelPackageName);
+        // await writeFile(filePath, replacedContent, { encoding: 'utf-8', flag: 'w' });
+        await rewriteFile(filePath, content => content
           .replaceAll(/<!-- package-name -->/g, packageName)
-          .replaceAll(/<!-- camel-package-name -->/g, camelPackageName);
-        await writeFile(filePath, replacedContent, { encoding: 'utf-8', flag: 'w' });
+          .replaceAll(/<!-- camel-package-name -->/g, camelPackageName));
         if (dirent.name === 'Component.vue') {
           await rename(filePath, join(parentPath, camelPackageName + '.vue'));
         }
@@ -105,10 +96,11 @@ async function main() {
       direntQueue = tempQueue;
     }
 
-    // await sleep(3000);
+    const srcIndexFilePath = join(RootPath, 'src', 'index.ts');
+    await rewriteFile(srcIndexFilePath, content => {
+      return `${content}export * from '@tui/${packageName}';\n`
+    });
 
-    // readline.moveCursor(process.stdout, 0, -1);
-    // readline.clearLine(process.stdout, -1);
     success(packageName + ' created!', { displace: true });
   }
 
@@ -116,6 +108,8 @@ async function main() {
   process.exit(0);
 }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+async function rewriteFile(path, rewrite = v => v) {
+  const content = await readFile(path, { encoding: 'utf-8', flag: 'r' });
+  const rewrittenContent = rewrite(content);
+  await writeFile(path, rewrittenContent, { encoding: 'utf-8', flag: 'w' });
 }

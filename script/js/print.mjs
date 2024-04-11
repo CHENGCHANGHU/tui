@@ -1,5 +1,20 @@
 import readline from 'node:readline';
 
+readline.Interface.prototype._insertString = function(c) {
+  if (this.cursor < this.line.length) {
+    var beg = this.line.slice(0, this.cursor);
+    var end = this.line.slice(this.cursor, this.line.length);
+    this.line = beg + c + end;
+    this.cursor += c.length;
+    this._refreshLine();
+  } else {
+    this.line += c;
+    this.cursor += c.length;
+    this.output.write(c);
+    this._moveCursor(0);
+  }
+};
+
 const { columns } = process.stdout;
 
 export function createLog() {
